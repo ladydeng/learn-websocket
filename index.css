@@ -1,0 +1,43 @@
+#app{
+
+}
+
+.msgbox{
+    width: 500px;
+    border: 1px solid;
+    min-height: 200px;
+    position: relative;
+}
+
+.otherBox{
+    display: flex;
+    justify-content: flex-start;
+}
+
+.other{
+    width: fit-content;
+    margin-top: 20px;
+}
+
+.other .txt{
+    background: blue;
+    color: white;
+}
+
+.meBox{
+    display: flex;
+    justify-content: flex-end;
+}
+
+
+.me{
+    width: fit-content;
+    /* position: absolute;
+    right: 0; */
+    text-align: left;
+}
+
+.me .txt{
+    background: green;
+    color: white;
+}

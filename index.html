@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Document</title>
+   <link rel="stylesheet" href="./index.css">
+</head>
+
+<body>
+   <div id="app">
+      <div class="msgbox">
+         <div class="msg" id="msg">
+            <div class="otherBox">
+               <div class="other">
+                  <div class="userName">张三：</div>
+                  <div class="txt">在吗？</div>
+               </div>
+            </div>
+            <div class="moBox">
+               <div class="me">
+                  <div class="userName">李四：</div>
+                  <div class="txt">在</div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="sendbox">
+         <!-- <select name="" id="" class="role">
+            <option value="张三">张三</option>
+            <option value="李四">李四</option>
+         </select> -->
+         <input class="usertxt" type="text" placeholder="请先输入">
+         <button id="sendBtn">发送</button>
+      </div>
+   </div>
+
+   <script src="./jquery-1.10.2.min.js"></script>
+   <script>
+      $(function () {
+         var name=prompt("请输入张三或者李四","")
+         if (name!=null && name!=""){
+            var ws = new WebSocket('ws://localhost:4000')
+            ws.onopen = () => { // 监听到连接成功
+               roomOpen = true
+               ws.send(JSON.stringify({
+                  userId: name,
+                  userName: name,
+                  roomId: '888',
+                  roomName: '聊天群',
+                  txt:"欢迎进群",
+                  event: 'login', // 向服务端发送一条登陆消息，并携带对应房间信息和用户信息
+               }))
+            }
+         }else{
+            alert("您的浏览器不支持webSocket")
+         } 
+
+         // 收到消息的回调
+         ws.onmessage = (message) => {
+            var obj = JSON.parse(message.data)
+            console.log(obj)
+            if(obj.userName == '张三'){
+               $("#msg").append(`
+               <div class="otherBox">
+                  <div class="other">
+                     <div class="userName">${obj.userName}：</div>
+                     <div class="txt">${obj.txt}</div>
+                  </div>
+               </div>
+               `)
+            }else{
+               $("#msg").append(`
+               <div class="meBox">
+                  <div class="me">
+                     <div class="userName">${obj.userName}：</div>
+                     <div class="txt">${obj.txt}</div>
+                  </div>
+               </div>
+               `)
+            }
+         }
+
+         // 收到连接断开通知
+         ws.onclose = () => { // 监听websocket关闭的回调
+            console.log('onclose', ws.readyState)
+         }
+         
+         $("#sendBtn").click(function(){
+            if(!$('.usertxt').val()){
+               console.log("请先输入发送的文字")
+               return
+            }
+            ws.send(JSON.stringify({
+               userId: name,
+               userName:name,
+               txt:$(".usertxt").val()
+            }))
+         })
+
+         // 手动断开websocket连接
+         function close() {
+            ws && ws.close()
+         }
+      })
+   </script>
+</body>
+
+</html>
