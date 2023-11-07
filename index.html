@@ -39,6 +39,10 @@
    <script src="./jquery-1.10.2.min.js"></script>
    <script>
       $(function () {
+         if(!window.WebSocket){
+            return alert("您的浏览器不支持webSocket，请使用主流浏览器。")
+         }
+
          var name=prompt("请输入张三或者李四","")
          if (name!=null && name!=""){
             var ws = new WebSocket('ws://localhost:4000')
@@ -53,9 +57,7 @@
                   event: 'login', // 向服务端发送一条登陆消息，并携带对应房间信息和用户信息
                }))
             }
-         }else{
-            alert("您的浏览器不支持webSocket")
-         } 
+         }
 
          // 收到消息的回调
          ws.onmessage = (message) => {
